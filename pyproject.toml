@@ -29,6 +29,9 @@ Source = "https://github.com/brandjas/sequenceutils"
 [tool.hatch.version]
 path = "src/sequenceutils/__about__.py"
 
+[[tool.hatch.envs.hatch-test.matrix]]
+python = ["3.12"]
+
 [tool.hatch.envs.types]
 extra-dependencies = [
   "mypy>=1.0.0",
