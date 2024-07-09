@@ -1,8 +1,10 @@
 from collections.abc import Iterable, Sequence
+from typing import TypeVar
 import bisect
 
 
-class ConcatenatedSequence[T](Sequence[T]):
+T = TypeVar('T')
+class ConcatenatedSequence(Sequence[T]):
     _sequence_by_start_index: dict[int, Sequence[T]]
     _start_indices: list[int]
     _range: range

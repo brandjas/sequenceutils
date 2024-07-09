@@ -1,8 +1,9 @@
 from collections.abc import Sequence
-from typing import Callable, Self
+from typing import Callable, TypeVar
 
 
-class DynamicSequence[T](Sequence[T]):
+T = TypeVar('T')
+class DynamicSequence(Sequence[T]):
     _item_getter: Callable[[int], T]
     _range: range
 
@@ -21,7 +22,7 @@ class DynamicSequence[T](Sequence[T]):
             length = range(length)
         self._range = length
 
-    def __getitem__(self, index) -> T | Self:
+    def __getitem__(self, index) -> T | 'DynamicSequence[T]':
         if isinstance(index, slice):
             return DynamicSequence(self._item_getter, self._range[index])
         return self._item_getter(self._range[index])
