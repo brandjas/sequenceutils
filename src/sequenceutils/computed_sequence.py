@@ -3,7 +3,7 @@ from typing import Callable, TypeVar
 
 
 T = TypeVar('T')
-class DynamicSequence(Sequence[T]):
+class ComputedSequence(Sequence[T]):
     _item_getter: Callable[[int], T]
     _range: range
 
@@ -22,9 +22,9 @@ class DynamicSequence(Sequence[T]):
             length = range(length)
         self._range = length
 
-    def __getitem__(self, index) -> T | 'DynamicSequence[T]':
+    def __getitem__(self, index) -> T | 'ComputedSequence[T]':
         if isinstance(index, slice):
-            return DynamicSequence(self._item_getter, self._range[index])
+            return ComputedSequence(self._item_getter, self._range[index])
         return self._item_getter(self._range[index])
 
     def __len__(self) -> int:

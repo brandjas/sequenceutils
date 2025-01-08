@@ -1,2 +1,2 @@
 from .concatenated_sequence import ConcatenatedSequence
-from .dynamic_sequence import DynamicSequence
+from .computed_sequence import ComputedSequence
