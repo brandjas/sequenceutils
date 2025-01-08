@@ -25,6 +25,14 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: refs/tags/${{ github.event.workflow_run.head_branch }}
+      - name: Verify that tag (without leading v) matches version in __about__.py
+        run: |
+          tag=${{ github.event.workflow_run.head_branch }}
+          tag_version=${tag#v}
+          if ! grep -q "^__version__ = \"${tag_version}\"$" src/sequenceutils/__about__.py; then
+            echo "Tag does not match version in __about__.py"
+            exit 1
+          fi
       - name: Install Hatch
         uses: pypa/hatch@install
       - name: Build
