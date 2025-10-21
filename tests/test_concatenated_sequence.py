@@ -1,5 +1,6 @@
 from sequenceutils import ConcatenatedSequence
 import pytest
+import sys
 
 
 @pytest.mark.parametrize("sequences", [
@@ -59,3 +60,13 @@ def test_huge_sequence():
     assert cs[10**15] == 1
     assert cs[10**15 + 1] == 2
     assert cs[::10][10**14] == 1
+
+
+def test_humongous_sequence():
+    cs = ConcatenatedSequence([range(i, sys.maxsize + i) for i in range(3)])
+    expected_length = sys.maxsize * 3
+    assert cs.__len__() == expected_length
+    assert cs[0] == 0
+    assert cs[1] == 1
+    assert cs[::-1][-1] == 0
+    assert cs[-1] == (sys.maxsize - 1) + 2

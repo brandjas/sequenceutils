@@ -1,5 +1,6 @@
 from sequenceutils import ComputedSequence
 import pytest
+import sys
 
 
 def test_empty_sequence():
@@ -40,3 +41,15 @@ def test_huge_sequence():
     assert seq[1] == 2
     assert seq[::-1][-1] == 1
     assert seq[-1] == 10**15
+
+
+def test_humongous_sequence():
+    def get_item(index):
+        return index + 1
+    seq_length = sys.maxsize**3
+    seq = ComputedSequence(get_item, length=seq_length)
+    assert seq.__len__() == seq_length
+    assert seq[0] == 1
+    assert seq[1] == 2
+    assert seq[::-1][-1] == 1
+    assert seq[-1] == seq_length

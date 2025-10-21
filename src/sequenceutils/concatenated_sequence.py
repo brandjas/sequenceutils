@@ -31,10 +31,11 @@ class ConcatenatedSequence(Sequence[T]):
             for s in sequences:
                 if not isinstance(s, Sequence):
                     raise TypeError(f"Expected a sequence, but got {s!r}")
-                if len(s) == 0:
+                # https://github.com/python/cpython/issues/94937
+                if s.__len__() == 0:
                     continue
                 self._sequence_by_start_index[total_length] = s
-                total_length += len(s)
+                total_length += s.__len__()
             if length is None:
                 length = total_length
 
@@ -54,4 +55,12 @@ class ConcatenatedSequence(Sequence[T]):
         return self._sequence_by_start_index[start][index - start]
 
     def __len__(self):
-        return len(self._range)
+        # https://github.com/python/cpython/issues/94937
+        try:
+            return len(self._range)
+        except OverflowError:
+            start, stop, step = self._range.start, self._range.stop, self._range.step
+            assert step != 0
+            if step > 0:
+                return (stop - start + step - 1) // step
+            return (start - stop - step - 1) // -step

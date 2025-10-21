@@ -28,4 +28,12 @@ class ComputedSequence(Sequence[T]):
         return self._item_getter(self._range[index])
 
     def __len__(self) -> int:
-        return len(self._range)
+        # https://github.com/python/cpython/issues/94937
+        try:
+            return len(self._range)
+        except OverflowError:
+            start, stop, step = self._range.start, self._range.stop, self._range.step
+            assert step != 0
+            if step > 0:
+                return (stop - start + step - 1) // step
+            return (start - stop - step - 1) // -step
